@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { DropArea, DropText, HighlightText } from './styles/FileDropZone';
-
+import { DropArea, DropText, HighlightText } from './style';
 
 interface FileDropzoneProps {
   onFilesAccepted: (files: File[]) => void;
@@ -19,7 +18,7 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesAccepted, acc
   return (
     <DropArea {...getRootProps()} $isDragActive={isDragActive}>
       <input {...getInputProps()} />
-      
+
       {isDragActive ? (
         <DropText $isDragActive={isDragActive}>Solte os arquivos aqui...</DropText>
       ) : (

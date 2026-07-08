@@ -12,8 +12,9 @@ export const Home = () => {
 
       <Grid>
         {
-          options.map((item) => (
+          options.map((item, idx) => (
             <CardFunctionLink
+              key={idx}
               iconString={item.iconString}
               title={item.title}
               description={item.description}

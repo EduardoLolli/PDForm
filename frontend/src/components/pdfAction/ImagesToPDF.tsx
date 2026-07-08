@@ -1,8 +1,7 @@
 import { useState } from 'react';
+import { Container, ConvertButton, ImageCard, ImageGrid, ImageName, ImagePreview, ListTitle, RemoveImageButton, SectionResult, Title } from './style';
+import { clearFileDropZone } from '../../util/FileDropZone';
 import { FileDropzone } from './FileDropZone';
-import { Container, ConvertButton, ImageCard, ImageGrid, ImageName, ImagePreview, ListTitle, RemoveImageButton, SectionResult } from './pdfAction/ImagesToPDF';
-import { clearFileDropZone } from '../util/FileDropZone';
-import { Title } from './pdfAction/MergePDF';
 
 
 export const ImagesToPDF = () => {
