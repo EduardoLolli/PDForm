@@ -1,0 +1,38 @@
+[
+    {
+        "iconString": "📄+📄",
+        "title": "Juntar PDF",
+        "description": "Mesclar e combinar arquivos PDF na ordem que você desejar.",
+        "route": "/merge"
+    },
+    {
+        "iconString": "🖼️ ➔ 📄",
+        "title": "Imagens para PDF",
+        "description": "Converta imagens para PDF",
+        "route": "/from-images"
+    },
+    {
+        "iconString": "📄/📄",
+        "title": "Dividir PDF",
+        "description": "Selecione um intervalo de páginas, separe uma página",
+        "route": "/cut-pdf"
+    },
+    {
+        "iconString": "",
+        "title": "Em breve",
+        "description": "Em breve",
+        "route": "/coming-soon"
+    },
+    {
+        "iconString": "",
+        "title": "Em breve",
+        "description": "Em breve",
+        "route": "/coming-soon"
+    },
+    {
+        "iconString": "",
+        "title": "Em breve",
+        "description": "Em breve",
+        "route": "/coming-soon"
+    }
+]

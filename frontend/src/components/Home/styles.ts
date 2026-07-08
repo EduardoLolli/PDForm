@@ -2,10 +2,15 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const Container = styled.div`
-  max-width: 1152px;
+  max-width: 1444px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+
+  @media (max-width: 640px) {
+  display:flex;
+  flex-direction: column;
+  }
 `;
 
 export const Title = styled.h1`
@@ -22,14 +27,9 @@ export const Subtitle = styled.p`
 
 export const Grid = styled.div`
   display: grid;
-  grid-template-cols: 1fr;
-  gap: 1.5rem;
-  max-width: 768px;
-  margin: 0 auto;        
-
-  @media (min-width: 768px) {
-    grid-template-cols: repeat(2, 1fr);
-  }
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+  gap: 1.5rem; 
+  margin: 0 auto;
 `;
 
 export const CardTitle = styled.h2`
@@ -41,18 +41,22 @@ export const CardTitle = styled.h2`
 `;
 
 export const CardLink = styled(Link)`
-  display: block;
-  padding: 1.5rem;       
+  display: flex;
+  align-items: center;
+  max-width: 240px;
+  gap: 1rem;             
+  flex-direction: column;
+  padding: 1rem 1.25rem;  
   background-color: #ffffff;
-  border: 1px solid #e5e7eb; 
-  border-radius: 0.75rem;    
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
-  text-align: left;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;  
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   text-decoration: none;
   transition: all 0.2s;
 
   &:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* hover:shadow-md */
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     
     ${CardTitle} {
       color: #ef4444;

@@ -1,28 +1,26 @@
-import { CardFunctionLink } from '../components/CardFunctionLink';
-import { Container, Grid, Subtitle, Title } from '../components/styles/Home';
+import { CardFunctionLink } from "../components/Home/CardFunctionLink";
+import { CardTitle, Container, Grid, Subtitle } from "../components/Home/styles";
+import options from './../menu.json'
 
 
 export const Home = () => {
+
   return (
     <Container>
-      <Title>Conversor de PDF</Title>
+      <CardTitle>Conversor de PDF</CardTitle>
       <Subtitle>texto bonitin.</Subtitle>
 
       <Grid>
+        {
+          options.map((item) => (
+            <CardFunctionLink
+              iconString={item.iconString}
+              title={item.title}
+              description={item.description}
+              route={item.route}
+            />
+          ))}
 
-        <CardFunctionLink
-          iconString='📄+📄'
-          title='Juntar PDF'
-          description='Mesclar e combinar arquivos PDF na ordem que você desejar.'
-          route='/merge'
-        />
-
-        <CardFunctionLink
-          iconString='🖼️ ➔ 📄'
-          title='Imagens para PDF'
-          description='Converta imagens para PDF'
-          route='/from-images'
-        />
       </Grid>
     </Container>
   );

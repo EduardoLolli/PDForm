@@ -6,11 +6,17 @@ export const Nav = styled.nav`
   background-color: #ffffff;
   border-bottom: 1px solid #e5e7eb;
   padding: 1rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px -8px rgba(0, 0, 0, 0.9);
+
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 `;
 
 export const NavContainer = styled.div`
-  max-width: 1152px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -29,7 +35,7 @@ export const Logo = styled(Link)`
   }
 
   span {
-    color: #ef4444; /* O "Form" em vermelho */
+    color: #ef4444; 
   }
 `;
 

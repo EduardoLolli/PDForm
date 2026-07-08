@@ -1,4 +1,5 @@
-import { CardDescription, CardIcon, CardLink, CardTitle } from "./styles/Home"
+import { CardDescription, CardIcon, CardLink, CardTitle } from "./styles";
+
 
 interface ICardFunctionLink {
     iconString: string

@@ -1,13 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Home } from './pages/Home';
-import { MergePDF } from './pages/MergePDF';
+import { MergePDF } from './components/MergePDF';
 import { Layout } from './components/Layout';
 import { ImagesToPDF } from './components/ImagesToPDF';
+import { ComingSoon } from './pages/ComingSoon';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />, // Se quiser uma Navbar fixa em todas as páginas
+    element: <Layout />,
     children: [
       {
         path: '/',
@@ -20,7 +21,13 @@ export const router = createBrowserRouter([
       {
         path: '/from-images',
         element: <ImagesToPDF />,
+      },
+      {
+        path: 'coming-soon',
+        element: <ComingSoon />
       }
     ],
-  },
+  }, {
+    path: '/teste',
+  }
 ]);

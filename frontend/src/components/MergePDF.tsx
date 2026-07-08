@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FileDropzone } from '../components/FileDropZone';
-import { Container, FileItem, FileList, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from '../components/styles/MergePDF';
+import { FileDropzone } from './FileDropZone';
+import { Container, FileItem, FileList, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from './pdfAction/MergePDF';
 import { clearFileDropZone } from '../util/FileDropZone';
 
 export const MergePDF = () => {
