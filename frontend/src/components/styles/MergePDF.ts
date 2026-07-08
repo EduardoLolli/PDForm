@@ -38,12 +38,6 @@ export const FileList = styled.ul`
   }
 `;
 
-export const FileItem = styled.li`
-  padding: 0.75rem;       /* p-3 */
-  font-size: 0.875rem;    /* text-sm */
-  color: #4b5563;         /* text-gray-600 */
-`;
-
 export const MergeButton = styled.button`
   background-color: #ef4444; /* bg-red-500 */
   color: #ffffff;
@@ -63,5 +57,30 @@ export const MergeButton = styled.button`
   &:disabled {
     background-color: #9ca3af; /* disabled:bg-gray-400 */
     cursor: not-allowed;
+  }
+`;
+export const FileItem = styled.li`
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  display: flex;             /* Alinha o nome e o X na mesma linha */
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const RemoveButton = styled.button`
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #ef4444;          /* Fica vermelho no hover */
+    background-color: #fee2e2;
   }
 `;

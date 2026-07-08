@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { FileDropzone } from './FileDropZone';
-import { Container, ConvertButton, ImageCard, ImageGrid, ImageName, ImagePreview, ListTitle, SectionResult, Title } from './styles/ImagesToPDF';
+import { Container, ConvertButton, ImageCard, ImageGrid, ImageName, ImagePreview, ListTitle, RemoveImageButton, SectionResult, Title } from './styles/ImagesToPDF';
+import { clearFileDropZone } from '../util/FileDropZone';
 
-// --- Componentes Estilizados ---
-
-
-// --- Componente Principal ---
 
 export const ImagesToPDF = () => {
   const [images, setImages] = useState<File[]>([]);
@@ -18,10 +15,10 @@ export const ImagesToPDF = () => {
 
   const handleConvert = async () => {
     if (images.length === 0) return alert("Selecione pelo menos 1 imagem");
-    
+
     setLoading(true);
     const formData = new FormData();
-    
+
     images.forEach((image) => {
       formData.append("files", image);
     });
@@ -47,34 +44,42 @@ export const ImagesToPDF = () => {
       alert("Falha ao converter as imagens em PDF.");
     } finally {
       setLoading(false);
+      clearFileDropZone(setImages)
     }
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   return (
     <Container>
       <Title>Converter Imagens para PDF</Title>
-      
-      <FileDropzone 
-        onFilesAccepted={handleFilesAccepted} 
-        accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }} 
+
+      <FileDropzone
+        onFilesAccepted={handleFilesAccepted}
+        accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
       />
 
       {images.length > 0 && (
         <SectionResult>
           <ListTitle>Imagens selecionadas ({images.length}):</ListTitle>
-          
+
           <ImageGrid>
             {images.map((file, idx) => (
               <ImageCard key={idx}>
-                <ImagePreview 
-                  src={window.URL.createObjectURL(file)} 
-                  alt={file.name} 
+                <RemoveImageButton type="button" onClick={() => handleRemoveImage(idx)}>
+                  ✕
+                </RemoveImageButton>
+                <ImagePreview
+                  src={window.URL.createObjectURL(file)}
+                  alt={file.name}
                 />
                 <ImageName>{file.name}</ImageName>
               </ImageCard>
             ))}
           </ImageGrid>
-          
+
           <ConvertButton onClick={handleConvert} disabled={loading}>
             {loading ? "Convertendo..." : "Converter para PDF ->"}
           </ConvertButton>

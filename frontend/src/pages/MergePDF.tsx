@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FileDropzone } from '../components/FileDropZone';
-import { Container, FileItem, FileList, ListTitle, MergeButton, SectionResult, Title } from '../components/styles/MergePDF';
-
+import { Container, FileItem, FileList, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from '../components/styles/MergePDF';
+import { clearFileDropZone } from '../util/FileDropZone';
 
 export const MergePDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -13,10 +13,10 @@ export const MergePDF = () => {
 
   const handleMerge = async () => {
     if (files.length < 2) return alert("Selecione pelo menos 2 PDFs");
-    
+
     setLoading(true);
     const formData = new FormData();
-    
+
     files.forEach((file) => {
       formData.append("files", file);
     });
@@ -42,28 +42,38 @@ export const MergePDF = () => {
       alert("Falha ao juntar os arquivos.");
     } finally {
       setLoading(false);
+      clearFileDropZone(setFiles)
     }
+  };
+
+  const handleRemoveFile = (indexToRemove: number) => {
+    setFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   return (
     <Container>
       <Title>Juntar arquivos PDF</Title>
-      
-      <FileDropzone 
-        onFilesAccepted={handleFilesAccepted} 
-        accept={{ 'application/pdf': ['.pdf'] }} 
+
+      <FileDropzone
+        onFilesAccepted={handleFilesAccepted}
+        accept={{ 'application/pdf': ['.pdf'] }}
       />
 
       {files.length > 0 && (
         <SectionResult>
           <ListTitle>Arquivos selecionados ({files.length}):</ListTitle>
-          
+
           <FileList>
             {files.map((file, idx) => (
-              <FileItem key={idx}>{file.name}</FileItem>
+              <FileItem key={idx}>
+                <span>{file.name}</span>
+                <RemoveButton type="button" onClick={() => handleRemoveFile(idx)}>
+                  ✕
+                </RemoveButton>
+              </FileItem>
             ))}
           </FileList>
-          
+
           <MergeButton onClick={handleMerge} disabled={loading}>
             {loading ? "Processando..." : "Mesclar PDF ->"}
           </MergeButton>

@@ -34,18 +34,6 @@ export const ImageGrid = styled.div`
   }
 `;
 
-export const ImageCard = styled.div`
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  position: relative;
-`;
-
 export const ImagePreview = styled.img`
   width: 100%;
   height: 120px;
@@ -82,5 +70,42 @@ export const ConvertButton = styled.button`
   &:disabled {
     background-color: #9ca3af;
     cursor: not-allowed;
+  }
+`;
+
+export const ImageCard = styled.div`
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  position: relative;        /* Essencial para o posicionamento do botão */
+`;
+
+export const RemoveImageButton = styled.button`
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+
+  &:hover {
+    color: #ffffff;
+    background-color: #ef4444;
+    border-color: #ef4444;
   }
 `;
