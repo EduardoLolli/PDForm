@@ -101,6 +101,7 @@ export const MergePDF = () => {
                       file={file}
                       idx={idx}
                       onRemove={() => handleRemoveFile(idx)}
+                      disabled={loading}
                     />
                   );
                 })}

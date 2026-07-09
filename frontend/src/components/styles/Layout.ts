@@ -52,6 +52,6 @@ export const NavLink = styled(Link)`
 
 export const MainContent = styled.main`
   background-color: #f1f5f8;
-  min-height: calc(100vh - 65px);
-  padding: 2.5rem 0;
+  min-height: calc(100vh - 64px);
+  margin-top: 60px
 `;

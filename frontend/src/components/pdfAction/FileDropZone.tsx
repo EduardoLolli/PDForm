@@ -23,7 +23,6 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
     <DropArea
       {...getRootProps()}
       $isDragActive={isDragActive}
-      $disabled={disabled}
       style={{
         opacity: disabled ? 0.6 : 1,
         cursor: disabled ? 'not-allowed' : 'pointer',

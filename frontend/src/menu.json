@@ -18,9 +18,9 @@
         "route": "/cut-pdf"
     },
     {
-        "iconString": "",
-        "title": "Em breve",
-        "description": "Em breve",
+        "iconString": "📄 ➔ 📄",
+        "title": "Reorganizar PDF",
+        "description": "Reorganize as páginas de um arquivo PDF",
         "route": "/coming-soon"
     },
     {

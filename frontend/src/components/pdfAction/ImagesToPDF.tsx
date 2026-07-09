@@ -1,45 +1,47 @@
 import { useState } from 'react';
-import { Container, ConvertButton, ImageGrid, ListTitle, SectionResult, Title } from './style';
+import {
+  Container,
+  ImageGrid,
+  ListTitle,
+  PreContainerGrid,
+  SectionResult,
+  Title,
+  MenuToggleButton
+} from './style';
 import { clearFileDropZone } from '../../util/modifications';
 import { FileDropzone } from './FileDropZone';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { SortableImageCard } from './SortableImageCard';
-
-
+import { Sidebar } from '../sidebar';
 
 export const ImagesToPDF = () => {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
+      activationConstraint: { distance: 5 },
     })
   );
 
   const handleFilesAccepted = (acceptedFiles: File[]) => {
     setImages((prev) => [...prev, ...acceptedFiles]);
+    setSidebarOpen(true);
   };
 
   const handleConvert = async () => {
     if (images.length === 0) return alert("Selecione pelo menos 1 imagem");
-
     setLoading(true);
     const formData = new FormData();
-
-    images.forEach((image) => {
-      formData.append("files", image);
-    });
+    images.forEach((image) => formData.append("files", image));
 
     try {
       const response = await fetch("http://localhost:8000/api/v1/pdf/from-images", {
         method: "POST",
         body: formData,
       });
-
       if (!response.ok) throw new Error("Erro ao converter imagens");
 
       const blob = await response.blob();
@@ -51,6 +53,7 @@ export const ImagesToPDF = () => {
       a.click();
       a.remove();
       clearFileDropZone(setImages);
+      setSidebarOpen(false);
     } catch (error) {
       console.error(error);
       alert("Falha ao converter as imagens em PDF.");
@@ -60,7 +63,9 @@ export const ImagesToPDF = () => {
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
-    setImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    const updatedImages = images.filter((_, idx) => idx !== indexToRemove);
+    setImages(updatedImages);
+    if (updatedImages.length === 0) setSidebarOpen(false);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -77,48 +82,73 @@ export const ImagesToPDF = () => {
   const itemIds = images.map((img, idx) => `${img.name}-${idx}`);
 
   return (
-    <Container>
-      <Title>Converter Imagens para PDF</Title>
+    <PreContainerGrid>
+      <Container>
+        <Title>Converter Imagens para PDF</Title>
 
-      <FileDropzone
-        onFilesAccepted={handleFilesAccepted}
-        accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
-        disabled={loading}
-      />
+        <FileDropzone
+          onFilesAccepted={handleFilesAccepted}
+          accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
+          disabled={loading}
+        />
+
+        {images.length > 0 && (
+          <SectionResult>
+            <ListTitle>Imagens selecionadas ({images.length}):</ListTitle>
+
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={itemIds} strategy={rectSortingStrategy}>
+                <ImageGrid>
+                  {images.map((img, idx) => {
+                    const uniqueId = `${img.name}-${idx}`;
+                    return (
+                      <SortableImageCard
+                        key={uniqueId}
+                        id={uniqueId}
+                        img={img}
+                        idx={idx}
+                        onRemove={() => handleRemoveImage(idx)}
+                        loading={loading}
+                      />
+                    );
+                  })}
+                </ImageGrid>
+              </SortableContext>
+            </DndContext>
+          </SectionResult>
+        )}
+      </Container>
 
       {images.length > 0 && (
-        <SectionResult>
-          <ListTitle>Imagens selecionadas ({images.length}):</ListTitle>
-
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={itemIds} strategy={rectSortingStrategy}>
-              <ImageGrid>
-                {images.map((img, idx) => {
-                  const uniqueId = `${img.name}-${idx}`;
-                  return (
-                    <SortableImageCard
-                      key={uniqueId}
-                      id={uniqueId}
-                      img={img}
-                      idx={idx}
-                      onRemove={() => handleRemoveImage(idx)}
-                      loading={loading}
-                    />
-                  );
-                })}
-              </ImageGrid>
-            </SortableContext>
-          </DndContext>
-
-          <ConvertButton onClick={handleConvert} disabled={loading}>
-            {loading ? "Convertendo..." : "Converter para PDF ->"}
-          </ConvertButton>
-        </SectionResult>
+        <Sidebar
+          title="Otimizar Imagens"
+          actionButtonText={loading ? "Convertendo..." : "Converter para PDF →"}
+          onAction={handleConvert}
+          isActionDisabled={loading}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#4b5563' }}>
+              Orientação da página:
+            </label>
+            <select style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
+              <option>Retrato (Vertical)</option>
+              <option>Paisagem (Horizontal)</option>
+            </select>
+          </div>
+        </Sidebar>
       )}
-    </Container>
+      {images.length > 0 && (
+        <MenuToggleButton type="button" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? '✕' : '⚙️'}
+        </MenuToggleButton>
+      )}
+
+    </PreContainerGrid>
   );
 };

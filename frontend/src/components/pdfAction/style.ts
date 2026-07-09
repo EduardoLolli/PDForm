@@ -12,14 +12,10 @@ export const Title = styled.h1`
 
 
 export const ImageGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); 
+ display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
   gap: 1rem;
   margin-bottom: 1.5rem;
-
-  @media (min-width: 640px) {
-    grid-template-cols: repeat(4, 1fr);
-  }
 `;
 
 export const ImagePreview = styled.img`
@@ -98,17 +94,87 @@ export const RemoveImageButton = styled.button`
   }
 `;
 
+export const PreContainerGrid = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: calc(100vh - 64px); 
+  position: relative;
+  overflow: hidden; 
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+`;
 
 export const Container = styled.div`
-  max-width: 1000px;
-  margin: 0 auto;
+  flex: 1;
+  /* max-width: 1200px; */
   padding: 1.5rem;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; 
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 `;
+
+export interface DropAreaProps {
+  $isDragActive: boolean;
+}
+
+export const DropArea = styled.div<DropAreaProps>`
+  border-style: dashed;
+  margin-top: 40px;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  padding: 5.5rem 2rem; 
+  text-align: center;
+  cursor: pointer;
+  max-width: 1200px; 
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+
+  border-color: ${props => props.$isDragActive ? '#ef4444' : '#d1d5db'}; 
+  background-color: ${props => props.$isDragActive ? '#fef2f2' : 'transparent'}; 
+
+  &:hover {
+    border-color: ${props => props.$isDragActive ? '#ef4444' : '#f87171'}; 
+  }
+`;
+
+export const MenuToggleButton = styled.button`
+  display: none;
+  position: fixed;
+  top: 5.5rem;
+  right: 1.5rem; 
+  z-index: 100;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+`;
+
+
 
 
 
 export const SectionResult = styled.div`
   margin-top: 1.5rem;
+  max-width:1200px;
+  margin: 0 auto;
 `;
 
 export const ListTitle = styled.h3`
@@ -200,27 +266,9 @@ export const FileInfo = styled.div`
 // ********* FILE DROP ZONE ************* //
 
 
-interface DropAreaProps {
-  $isDragActive: boolean;
-}
 
 
-export const DropArea = styled.div<DropAreaProps>`
-  border-style: dashed;
-  margin-top: 90px;
-  border-radius: 0.5rem;
-  padding: 5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
 
-  border-color: ${props => props.$isDragActive ? '#ef4444' : '#d1d5db'}; 
-  background-color: ${props => props.$isDragActive ? '#fef2f2' : 'transparent'}; 
-
-  &:hover {
-    border-color: ${props => props.$isDragActive ? '#ef4444' : '#f87171'}; 
-  }
-`;
 
 export const DropText = styled.p<DropAreaProps>`
   font-weight: 500;

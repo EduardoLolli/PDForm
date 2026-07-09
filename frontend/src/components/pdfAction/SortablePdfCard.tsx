@@ -10,9 +10,10 @@ interface SortablePdfCardProps {
     file: File;
     idx: number;
     onRemove: () => void;
+    disabled: boolean
 }
 
-export const SortablePdfCard = ({ id, file, idx, onRemove }: SortablePdfCardProps) => {
+export const SortablePdfCard = ({ id, file, idx, onRemove, disabled }: SortablePdfCardProps) => {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
     const style = {
@@ -32,6 +33,7 @@ export const SortablePdfCard = ({ id, file, idx, onRemove }: SortablePdfCardProp
                     e.stopPropagation();
                     onRemove();
                 }}
+                disabled={disabled}
             >
                 ✕
             </RemoveImageButton>
