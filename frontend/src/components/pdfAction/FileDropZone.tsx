@@ -5,21 +5,36 @@ import { DropArea, DropText, HighlightText } from './style';
 interface FileDropzoneProps {
   onFilesAccepted: (files: File[]) => void;
   accept: Record<string, string[]>;
+  disabled?: boolean;
 }
 
-
-
-export const FileDropzone: React.FC<FileDropzoneProps> = ({ onFilesAccepted, accept }) => {
+export const FileDropzone: React.FC<FileDropzoneProps> = ({
+  onFilesAccepted,
+  accept,
+  disabled = false
+}) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: onFilesAccepted,
-    accept: accept
+    accept: accept,
+    disabled: disabled
   });
 
   return (
-    <DropArea {...getRootProps()} $isDragActive={isDragActive}>
+    <DropArea
+      {...getRootProps()}
+      $isDragActive={isDragActive}
+      $disabled={disabled}
+      style={{
+        opacity: disabled ? 0.6 : 1,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        backgroundColor: disabled ? '#f3f4f6' : undefined,
+      }}
+    >
       <input {...getInputProps()} />
 
-      {isDragActive ? (
+      {disabled ? (
+        <DropText $isDragActive={false}>Processando arquivos, aguarde...</DropText>
+      ) : isDragActive ? (
         <DropText $isDragActive={isDragActive}>Solte os arquivos aqui...</DropText>
       ) : (
         <DropText $isDragActive={isDragActive}>

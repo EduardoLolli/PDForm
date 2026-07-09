@@ -50,12 +50,12 @@ export const ImagesToPDF = () => {
       document.body.appendChild(a);
       a.click();
       a.remove();
+      clearFileDropZone(setImages);
     } catch (error) {
       console.error(error);
       alert("Falha ao converter as imagens em PDF.");
     } finally {
       setLoading(false);
-      clearFileDropZone(setImages);
     }
   };
 
@@ -83,6 +83,7 @@ export const ImagesToPDF = () => {
       <FileDropzone
         onFilesAccepted={handleFilesAccepted}
         accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
+        disabled={loading}
       />
 
       {images.length > 0 && (
@@ -105,6 +106,7 @@ export const ImagesToPDF = () => {
                       img={img}
                       idx={idx}
                       onRemove={() => handleRemoveImage(idx)}
+                      loading={loading}
                     />
                   );
                 })}

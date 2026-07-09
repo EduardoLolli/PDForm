@@ -69,6 +69,7 @@ export const MergePDF = () => {
       <FileDropzone
         onFilesAccepted={handleFilesAccepted}
         accept={{ 'application/pdf': ['.pdf'] }}
+        disabled={loading}
       />
 
 
@@ -98,7 +99,7 @@ export const MergePDF = () => {
                         >
                           <IndexBadge>{idx + 1}</IndexBadge>
                           <span>{file.name}</span>
-                          <RemoveButton type="button" onClick={() => handleRemoveFile(idx)}>
+                          <RemoveButton disabled={loading} type="button" onClick={() => handleRemoveFile(idx)}>
                             ✕
                           </RemoveButton>
                         </FileItem>
@@ -111,6 +112,10 @@ export const MergePDF = () => {
               )}
             </Droppable>
           </DragDropContext>
+
+          <MergeButton onClick={handleMerge} disabled={loading}>
+            {loading ? "Processando..." : "Mesclar PDF ->"}
+          </MergeButton>
 
         </SectionResult>
       )}

@@ -7,9 +7,10 @@ interface SortableImageCardProps {
     img: File;
     idx: number;
     onRemove: () => void;
+    loading?: boolean;
 }
 
-export const SortableImageCard = ({ id, img, idx, onRemove }: SortableImageCardProps) => {
+export const SortableImageCard = ({ id, img, idx, onRemove, loading }: SortableImageCardProps) => {
     const {
         attributes,
         listeners,
@@ -36,6 +37,7 @@ export const SortableImageCard = ({ id, img, idx, onRemove }: SortableImageCardP
             {...listeners}
         >
             <RemoveImageButton
+                disabled={loading}
                 type="button"
                 onClick={(e) => {
                     e.stopPropagation();
