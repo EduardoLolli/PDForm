@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { clearFileDropZone } from "../../util/FileDropZone";
+import { clearFileDropZone } from "../../util/modifications";
 import { Container, FileItem, FileList, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from "./style";
 import { FileDropzone } from "./FileDropZone";
 

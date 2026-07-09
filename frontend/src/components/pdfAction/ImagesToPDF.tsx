@@ -1,12 +1,24 @@
 import { useState } from 'react';
-import { Container, ConvertButton, ImageCard, ImageGrid, ImageName, ImagePreview, ListTitle, RemoveImageButton, SectionResult, Title } from './style';
-import { clearFileDropZone } from '../../util/FileDropZone';
+import { Container, ConvertButton, ImageGrid, ListTitle, SectionResult, Title } from './style';
+import { clearFileDropZone } from '../../util/modifications';
 import { FileDropzone } from './FileDropZone';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
+import { SortableImageCard } from './SortableImageCard';
+
 
 
 export const ImagesToPDF = () => {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
 
   const handleFilesAccepted = (acceptedFiles: File[]) => {
     setImages((prev) => [...prev, ...acceptedFiles]);
@@ -43,13 +55,26 @@ export const ImagesToPDF = () => {
       alert("Falha ao converter as imagens em PDF.");
     } finally {
       setLoading(false);
-      clearFileDropZone(setImages)
+      clearFileDropZone(setImages);
     }
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
     setImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setImages((prevImages) => {
+        const oldIndex = prevImages.findIndex((img, idx) => `${img.name}-${idx}` === active.id);
+        const newIndex = prevImages.findIndex((img, idx) => `${img.name}-${idx}` === over.id);
+        return arrayMove(prevImages, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const itemIds = images.map((img, idx) => `${img.name}-${idx}`);
 
   return (
     <Container>
@@ -64,20 +89,28 @@ export const ImagesToPDF = () => {
         <SectionResult>
           <ListTitle>Imagens selecionadas ({images.length}):</ListTitle>
 
-          <ImageGrid>
-            {images.map((file, idx) => (
-              <ImageCard key={idx}>
-                <RemoveImageButton type="button" onClick={() => handleRemoveImage(idx)}>
-                  ✕
-                </RemoveImageButton>
-                <ImagePreview
-                  src={window.URL.createObjectURL(file)}
-                  alt={file.name}
-                />
-                <ImageName>{file.name}</ImageName>
-              </ImageCard>
-            ))}
-          </ImageGrid>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={itemIds} strategy={rectSortingStrategy}>
+              <ImageGrid>
+                {images.map((img, idx) => {
+                  const uniqueId = `${img.name}-${idx}`;
+                  return (
+                    <SortableImageCard
+                      key={uniqueId}
+                      id={uniqueId}
+                      img={img}
+                      idx={idx}
+                      onRemove={() => handleRemoveImage(idx)}
+                    />
+                  );
+                })}
+              </ImageGrid>
+            </SortableContext>
+          </DndContext>
 
           <ConvertButton onClick={handleConvert} disabled={loading}>
             {loading ? "Convertendo..." : "Converter para PDF ->"}

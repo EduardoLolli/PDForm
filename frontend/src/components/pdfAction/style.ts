@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const Title = styled.h1`
   text-align: center;
-  font-size: 1.875rem;
+  font-size: 2.875rem;
   font-weight: 700;
   color: #1f2937;
   margin-top: 50px;
@@ -13,9 +13,9 @@ export const Title = styled.h1`
 
 export const ImageGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
+  grid-template-columns: repeat(3, 1fr); 
   gap: 1rem;
-  margin-bottom: 1.5rem;  /* mb-6 */
+  margin-bottom: 1.5rem;
 
   @media (min-width: 640px) {
     grid-template-cols: repeat(4, 1fr);
@@ -24,7 +24,7 @@ export const ImageGrid = styled.div`
 
 export const ImagePreview = styled.img`
   width: 100%;
-  height: 120px;
+  height: 220px;
   object-fit: cover;
   border-radius: 0.25rem;
   margin-bottom: 0.5rem;
@@ -41,7 +41,7 @@ export const ImageName = styled.span`
 `;
 
 export const ConvertButton = styled.button`
-  background-color: #ef4444; /* bg-red-500 */
+  background-color: #ef4444; 
   color: #ffffff;
   font-weight: 700;
   padding: 0.75rem 1.5rem;
@@ -174,6 +174,26 @@ export const RemoveButton = styled.button`
     color: #ef4444;
     background-color: #fee2e2;
   }
+`;
+
+export const IndexBadge = styled.span`
+  background-color: #f3f4f6;
+  color: #4b5563;
+  font-size: 0.75rem;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+`;
+
+export const FileInfo = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 

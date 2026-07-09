@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { clearFileDropZone } from "../../util/FileDropZone";
-import { Container, FileItem, FileList, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from "./style";
+import { clearFileDropZone, reorderList } from "../../util/modifications";
+import { Container, FileItem, FileList, IndexBadge, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from "./style";
 import { FileDropzone } from "./FileDropZone";
+import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 
 
 export const MergePDF = () => {
@@ -51,6 +52,16 @@ export const MergePDF = () => {
     setFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    const reorderedFiles = reorderList(
+      files,
+      result.source.index,
+      result.destination.index
+    );
+    setFiles(reorderedFiles);
+  };
+
   return (
     <Container>
       <Title>Juntar arquivos PDF</Title>
@@ -60,24 +71,47 @@ export const MergePDF = () => {
         accept={{ 'application/pdf': ['.pdf'] }}
       />
 
+
+
       {files.length > 0 && (
         <SectionResult>
-          <ListTitle>Arquivos selecionados ({files.length}):</ListTitle>
+          <ListTitle>Arquivos selecionados ({files.length})</ListTitle>
 
-          <FileList>
-            {files.map((file, idx) => (
-              <FileItem key={idx}>
-                <span>{file.name}</span>
-                <RemoveButton type="button" onClick={() => handleRemoveFile(idx)}>
-                  ✕
-                </RemoveButton>
-              </FileItem>
-            ))}
-          </FileList>
+          <DragDropContext onDragEnd={onDragEnd}>
 
-          <MergeButton onClick={handleMerge} disabled={loading}>
-            {loading ? "Processando..." : "Mesclar PDF ->"}
-          </MergeButton>
+            <Droppable droppableId="pdf-files-list">
+              {(provided) => (
+                <FileList {...provided.droppableProps} ref={provided.innerRef}>
+
+                  {files.map((file, idx) => (
+                    <Draggable key={file.name + idx} draggableId={file.name + idx} index={idx}>
+                      {(provided, snapshot) => (
+                        <FileItem
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={{
+                            ...provided.draggableProps.style,
+                            backgroundColor: snapshot.isDragging ? '#fef2f2' : '#ffffff',
+                            borderLeft: snapshot.isDragging ? '4px solid #ef4444' : '1px solid #e5e7eb'
+                          }}
+                        >
+                          <IndexBadge>{idx + 1}</IndexBadge>
+                          <span>{file.name}</span>
+                          <RemoveButton type="button" onClick={() => handleRemoveFile(idx)}>
+                            ✕
+                          </RemoveButton>
+                        </FileItem>
+                      )}
+                    </Draggable>
+                  ))}
+
+                  {provided.placeholder}
+                </FileList>
+              )}
+            </Droppable>
+          </DragDropContext>
+
         </SectionResult>
       )}
     </Container>
