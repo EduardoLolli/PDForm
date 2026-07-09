@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { clearFileDropZone, reorderList } from "../../util/modifications";
-import { Container, ConvertButton, FileItem, FileList, ImageGrid, IndexBadge, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from "./style";
+import { Container, ConvertButton, FileItem, FileList, ImageGrid, IndexBadge, ListTitle, MenuToggleButton, MergeButton, PreContainerGrid, RemoveButton, SectionResult, Title } from "./style";
 import { FileDropzone } from "./FileDropZone";
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { SortablePdfCard } from "./SortablePdfCard";
+import { Sidebar } from "../sidebar";
 
 
 export const MergePDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -74,46 +76,66 @@ export const MergePDF = () => {
   const itemIds = files.map((f, idx) => `${f.name}-${idx}`);
 
   return (
-    <Container>
-      <Title>Juntar arquivos PDF</Title>
 
-      <FileDropzone
-        onFilesAccepted={handleFilesAccepted}
-        accept={{ 'application/pdf': ['.pdf'] }}
-        disabled={loading}
-      />
+    <PreContainerGrid>
+      <Container>
+        <Title>Juntar arquivos PDF</Title>
+
+        <FileDropzone
+          onFilesAccepted={handleFilesAccepted}
+          accept={{ 'application/pdf': ['.pdf'] }}
+          disabled={loading}
+        />
 
 
 
+        {files.length > 0 && (
+          <SectionResult>
+            <ListTitle>Arquivos selecionados ({files.length}):</ListTitle>
+
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={itemIds} strategy={rectSortingStrategy}>
+                <ImageGrid>
+                  {files.map((file, idx) => {
+                    const uniqueId = `${file.name}-${idx}`;
+                    return (
+                      <SortablePdfCard
+                        key={uniqueId}
+                        id={uniqueId}
+                        file={file}
+                        idx={idx}
+                        onRemove={() => handleRemoveFile(idx)}
+                        disabled={loading}
+                      />
+                    );
+                  })}
+                </ImageGrid>
+              </SortableContext>
+            </DndContext>
+
+            <ConvertButton onClick={handleMerge} disabled={loading}>
+              {loading ? "Processando..." : "Mesclar PDF ->"}
+            </ConvertButton>
+          </SectionResult>
+        )}
+      </Container>
       {files.length > 0 && (
-        <SectionResult>
-          <ListTitle>Arquivos selecionados ({files.length}):</ListTitle>
-
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={itemIds} strategy={rectSortingStrategy}>
-              <ImageGrid>
-                {files.map((file, idx) => {
-                  const uniqueId = `${file.name}-${idx}`;
-                  return (
-                    <SortablePdfCard
-                      key={uniqueId}
-                      id={uniqueId}
-                      file={file}
-                      idx={idx}
-                      onRemove={() => handleRemoveFile(idx)}
-                      disabled={loading}
-                    />
-                  );
-                })}
-              </ImageGrid>
-            </SortableContext>
-          </DndContext>
-
-          <ConvertButton onClick={handleMerge} disabled={loading}>
-            {loading ? "Processando..." : "Mesclar PDF ->"}
-          </ConvertButton>
-        </SectionResult>
+        <Sidebar
+          title="Mesclar PDF"
+          actionButtonText={loading ? "Convertendo..." : "Converter para PDF →"}
+          onAction={handleMerge}
+          isActionDisabled={loading}
+          isOpen={sidebarOpen}
+        >
+          <></>
+        </Sidebar>
       )}
-    </Container>
+      {files.length > 0 && (
+        <MenuToggleButton type="button" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          {sidebarOpen ? '✕' : '⚙️'}
+        </MenuToggleButton>
+      )}
+
+    </PreContainerGrid>
   );
 };

@@ -111,7 +111,6 @@ export const PreContainerGrid = styled.div`
 
 export const Container = styled.div`
   flex: 1;
-  /* max-width: 1200px; */
   padding: 1.5rem;
   width: 100%;
   height: 100%;

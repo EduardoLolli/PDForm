@@ -125,22 +125,13 @@ export const ImagesToPDF = () => {
 
       {images.length > 0 && (
         <Sidebar
-          title="Otimizar Imagens"
+          title="Conversão de Imagens"
           actionButtonText={loading ? "Convertendo..." : "Converter para PDF →"}
           onAction={handleConvert}
           isActionDisabled={loading}
           isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#4b5563' }}>
-              Orientação da página:
-            </label>
-            <select style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
-              <option>Retrato (Vertical)</option>
-              <option>Paisagem (Horizontal)</option>
-            </select>
-          </div>
+          <></>
         </Sidebar>
       )}
       {images.length > 0 && (
