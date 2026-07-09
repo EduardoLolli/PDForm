@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { clearFileDropZone, reorderList } from "../../util/modifications";
-import { Container, FileItem, FileList, IndexBadge, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from "./style";
+import { Container, ConvertButton, FileItem, FileList, ImageGrid, IndexBadge, ListTitle, MergeButton, RemoveButton, SectionResult, Title } from "./style";
 import { FileDropzone } from "./FileDropZone";
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { SortablePdfCard } from "./SortablePdfCard";
 
 
 export const MergePDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  );
 
   const handleFilesAccepted = (acceptedFiles: File[]) => {
     setFiles((prev) => [...prev, ...acceptedFiles]);
@@ -52,15 +59,19 @@ export const MergePDF = () => {
     setFiles((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    const reorderedFiles = reorderList(
-      files,
-      result.source.index,
-      result.destination.index
-    );
-    setFiles(reorderedFiles);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setFiles((prev) => {
+        const oldIndex = prev.findIndex((f, idx) => `${f.name}-${idx}` === active.id);
+        const newIndex = prev.findIndex((f, idx) => `${f.name}-${idx}` === over.id);
+        return arrayMove(prev, oldIndex, newIndex);
+      });
+    }
   };
+
+  const itemIds = files.map((f, idx) => `${f.name}-${idx}`);
 
   return (
     <Container>
@@ -76,47 +87,30 @@ export const MergePDF = () => {
 
       {files.length > 0 && (
         <SectionResult>
-          <ListTitle>Arquivos selecionados ({files.length})</ListTitle>
+          <ListTitle>Arquivos selecionados ({files.length}):</ListTitle>
 
-          <DragDropContext onDragEnd={onDragEnd}>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={itemIds} strategy={rectSortingStrategy}>
+              <ImageGrid>
+                {files.map((file, idx) => {
+                  const uniqueId = `${file.name}-${idx}`;
+                  return (
+                    <SortablePdfCard
+                      key={uniqueId}
+                      id={uniqueId}
+                      file={file}
+                      idx={idx}
+                      onRemove={() => handleRemoveFile(idx)}
+                    />
+                  );
+                })}
+              </ImageGrid>
+            </SortableContext>
+          </DndContext>
 
-            <Droppable droppableId="pdf-files-list">
-              {(provided) => (
-                <FileList {...provided.droppableProps} ref={provided.innerRef}>
-
-                  {files.map((file, idx) => (
-                    <Draggable key={file.name + idx} draggableId={file.name + idx} index={idx}>
-                      {(provided, snapshot) => (
-                        <FileItem
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={{
-                            ...provided.draggableProps.style,
-                            backgroundColor: snapshot.isDragging ? '#fef2f2' : '#ffffff',
-                            borderLeft: snapshot.isDragging ? '4px solid #ef4444' : '1px solid #e5e7eb'
-                          }}
-                        >
-                          <IndexBadge>{idx + 1}</IndexBadge>
-                          <span>{file.name}</span>
-                          <RemoveButton disabled={loading} type="button" onClick={() => handleRemoveFile(idx)}>
-                            ✕
-                          </RemoveButton>
-                        </FileItem>
-                      )}
-                    </Draggable>
-                  ))}
-
-                  {provided.placeholder}
-                </FileList>
-              )}
-            </Droppable>
-          </DragDropContext>
-
-          <MergeButton onClick={handleMerge} disabled={loading}>
+          <ConvertButton onClick={handleMerge} disabled={loading}>
             {loading ? "Processando..." : "Mesclar PDF ->"}
-          </MergeButton>
-
+          </ConvertButton>
         </SectionResult>
       )}
     </Container>
