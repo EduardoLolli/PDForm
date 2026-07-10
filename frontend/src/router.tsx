@@ -4,7 +4,7 @@ import { MergePDF } from './components/pdfAction/MergePDF';
 import { Layout } from './components/Layout';
 import { ImagesToPDF } from './components/pdfAction/ImagesToPDF';
 import { ComingSoon } from './pages/ComingSoon';
-import { CutPDF } from './components/pdfAction/CutPDF';
+import { SplitPDF } from './components/pdfAction/SplitPDF';
 
 export const router = createBrowserRouter([
   {
@@ -24,8 +24,8 @@ export const router = createBrowserRouter([
         element: <ImagesToPDF />,
       },
       {
-        path: '/cut-pdf',
-        element: <CutPDF />,
+        path: '/split-pdf',
+        element: <SplitPDF />,
       },
       {
         path: 'coming-soon',

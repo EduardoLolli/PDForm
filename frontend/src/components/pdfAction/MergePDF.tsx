@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { clearFileDropZone, reorderList } from "../../util/modifications";
-import { Container, ConvertButton, FileItem, FileList, ImageGrid, IndexBadge, ListTitle, MenuToggleButton, MergeButton, PreContainerGrid, RemoveButton, SectionResult, Title } from "./style";
+import { clearFileDropZone } from "../../util/modifications";
+import { Container, ImageGrid, ListTitle, MenuToggleButton, PreContainerGrid, SectionResult, Title } from "./style";
 import { FileDropzone } from "./FileDropZone";
-import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { SortablePdfCard } from "./SortablePdfCard";
 import { Sidebar } from "../sidebar";
+import axios from "axios";
+import { downloadBlob } from "../../util/pdf";
 
 
 export const MergePDF = () => {
@@ -33,27 +34,20 @@ export const MergePDF = () => {
     });
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/pdf/merge", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("Erro ao processar PDFs");
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'pdf_mesclado.pdf';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      const resp = await axios.post(
+        import.meta.env.VITE_API_URL + "/v1/pdf/merge",
+        formData, {
+        responseType: 'blob'
+      }
+      )
+      const blob = resp.data;
+      downloadBlob(blob, "pdf_mesclado.pdf");
     } catch (error) {
       console.error(error);
       alert("Falha ao juntar os arquivos.");
     } finally {
       setLoading(false);
-      clearFileDropZone(setFiles)
+      clearFileDropZone(setFiles);
     }
   };
 
@@ -87,8 +81,6 @@ export const MergePDF = () => {
           disabled={loading}
         />
 
-
-
         {files.length > 0 && (
           <SectionResult>
             <ListTitle>Arquivos selecionados ({files.length}):</ListTitle>
@@ -112,10 +104,6 @@ export const MergePDF = () => {
                 </ImageGrid>
               </SortableContext>
             </DndContext>
-
-            <ConvertButton onClick={handleMerge} disabled={loading}>
-              {loading ? "Processando..." : "Mesclar PDF ->"}
-            </ConvertButton>
           </SectionResult>
         )}
       </Container>

@@ -38,7 +38,10 @@ export const SortablePdfCard = ({ id, file, idx, onRemove, disabled }: SortableP
                 ✕
             </RemoveImageButton>
 
-            <PdfThumbnail file={file} />
+            <PdfThumbnail
+                file={file}
+                uniqueId={id} 
+                />
 
             <IndexBadge>{idx + 1}</IndexBadge>
             <ImageName>{file.name}</ImageName>

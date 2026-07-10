@@ -15,7 +15,7 @@
         "iconString": "📄/📄",
         "title": "Dividir PDF",
         "description": "Selecione um intervalo de páginas, separe uma página",
-        "route": "/cut-pdf"
+        "route": "/split-pdf"
     },
     {
         "iconString": "📄 ➔ 📄",

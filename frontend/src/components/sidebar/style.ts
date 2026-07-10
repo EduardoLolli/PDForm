@@ -20,6 +20,7 @@ export const Aside = styled.aside<AsideProps>`
     right: 0;
     height: 100vh;
     margin-top: 60px;
+    padding-bottom: 100px;
     width: 320px;
     z-index: 99;
     transform: ${props => props.$isOpen ? 'translateX(0)' : 'translateX(100%)'};

@@ -1,11 +1,11 @@
 
 
 
-export const PDFAction = () => {
+export const PDFAction = ({ children }) => {
 
     return (
         <>
-        
+
         </>
     );
 };

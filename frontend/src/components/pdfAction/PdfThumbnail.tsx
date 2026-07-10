@@ -6,11 +6,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.j
 
 interface PdfThumbnailProps {
   file: File;
+  uniqueId: string;
+  pageNumber?: number;
 }
+
+const thumbnailCache: Record<string, string> = {};
 
 const ThumbnailWrapper = styled.div`
   width: 100%;
-  height: 220px;
+  height: 160px; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,48 +35,65 @@ const LoadingText = styled.span`
   color: #9ca3af;
 `;
 
-export const PdfThumbnail = ({ file }: PdfThumbnailProps) => {
+export const PdfThumbnail = ({ file, uniqueId, pageNumber = 1 }: PdfThumbnailProps) => {
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
 
+  const cacheKey = `${uniqueId}-p${pageNumber}`;
+
   useEffect(() => {
+    if (thumbnailCache[cacheKey]) {
+      setThumbnailUrl(thumbnailCache[cacheKey]);
+      return;
+    }
+
+    let isMounted = true;
+
     const generateThumbnail = async () => {
       try {
         const arrayBuffer = await file.arrayBuffer();
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         const pdf = await loadingTask.promise;
 
-        const page = await pdf.getPage(1);
+        const page = await pdf.getPage(pageNumber);
 
-        const viewport = page.getViewport({ scale: 0.5 });
+        const viewport = page.getViewport({ scale: 0.4 });
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
 
-        if (context) {
+        if (context && isMounted) {
           canvas.height = viewport.height;
           canvas.width = viewport.width;
 
           const renderContext = {
             canvasContext: context,
+            canvas,
             viewport: viewport,
-            canvas: canvas,
           };
 
           await page.render(renderContext).promise;
 
-          setThumbnailUrl(canvas.toDataURL());
+          if (isMounted) {
+            const base64Image = canvas.toDataURL('image/jpeg', 0.7);
+            thumbnailCache[cacheKey] = base64Image;
+            setThumbnailUrl(base64Image);
+          }
         }
       } catch (error) {
-        console.error("Erro ao gerar miniatura do PDF:", error);
+        console.error("Erro ao gerar miniatura:", error);
       }
     };
 
     generateThumbnail();
-  }, [file]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [file, cacheKey, pageNumber]);
 
   return (
     <ThumbnailWrapper>
       {thumbnailUrl ? (
-        <StyledImg src={thumbnailUrl} alt={file.name} />
+        <StyledImg src={thumbnailUrl} alt={`${file.name} - Página ${pageNumber}`} />
       ) : (
         <LoadingText>Carregando...</LoadingText>
       )}

@@ -1,6 +1,9 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, status
+import json
+import io
+from pypdf import PdfReader, PdfWriter
 from fastapi.responses import StreamingResponse
-from App.services import merge_pdf_files, convert_image_to_pdf
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, status
+from app.services import merge_pdf_files, convert_image_to_pdf, convert_pages_to_pdf
 
 router = APIRouter(
     prefix="/api/v1/pdf",
@@ -25,7 +28,7 @@ async def merge(files: list[UploadFile] = File(description="Selecione os PDFs"))
 
     try:
         
-        merged_pdf_stream = merge_pdf_files(files)
+        merged_pdf_stream =  await merge_pdf_files(files)
         
         return StreamingResponse(
             merged_pdf_stream,
@@ -41,10 +44,26 @@ async def merge(files: list[UploadFile] = File(description="Selecione os PDFs"))
         
 @router.post("/from-images")
 async def from_images(files: list[UploadFile] = File(...)):
-    pdf_strem = convert_image_to_pdf(files)
+    pdf_strem = await convert_image_to_pdf(files)
     
     return StreamingResponse(
         pdf_strem,
         media_type="application/pdf",
         headers={"Content-Disposition": "attachment; filename=pdf_images.pdf"}
     )
+
+@router.post("/split")
+async def split_pdf(
+    file: UploadFile = File(...),
+    pages: str = Form(...)  
+):
+    
+    sliced_pdf = await convert_pages_to_pdf(file, pages)
+    
+    
+    return StreamingResponse(
+            sliced_pdf,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=splited_pdf.pdf"}
+        )
+    
