@@ -7,13 +7,13 @@ import {
   SectionResult,
   Title,
   MenuToggleButton
-} from './style';
-import { clearFileDropZone } from '../../util/modifications';
-import { FileDropzone } from './FileDropZone';
+} from '../components/pdfAction/style';
+import { clearFileDropZone } from '../util/modifications';
+import { FileDropzone } from '../components/pdfAction/FileDropZone';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
-import { SortableImageCard } from './SortableImageCard';
-import { Sidebar } from '../sidebar';
+import { SortableImageCard } from '../components/pdfAction/SortableImageCard';
+import { Sidebar } from '../components/sidebar';
 
 export const ImagesToPDF = () => {
   const [images, setImages] = useState<File[]>([]);
@@ -38,7 +38,7 @@ export const ImagesToPDF = () => {
     images.forEach((image) => formData.append("files", image));
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/pdf/from-images", {
+      const response = await fetch(import.meta.env.VITE_API_URL + "/v1/pdf/from-images", {
         method: "POST",
         body: formData,
       });

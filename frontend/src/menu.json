@@ -24,6 +24,12 @@
         "route": "/coming-soon"
     },
     {
+        "iconString": "📄 ➔ PDF",
+        "title": "Documentação para PDF",
+        "description": "Converta sua documentação de formatos Json, Markdown em PDF",
+        "route": "/doc-to-pdf"
+    },
+    {
         "iconString": "",
         "title": "Em breve",
         "description": "Em breve",

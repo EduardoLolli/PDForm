@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { clearFileDropZone } from "../../util/modifications";
-import { Container, ImageGrid, ListTitle, MenuToggleButton, PreContainerGrid, SectionResult, Title } from "./style";
-import { FileDropzone } from "./FileDropZone";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
-import { SortablePdfCard } from "./SortablePdfCard";
-import { Sidebar } from "../sidebar";
 import axios from "axios";
-import { downloadBlob } from "../../util/pdf";
+import { downloadBlob } from "../util/pdf";
+import { clearFileDropZone } from "../util/modifications";
+import { ImageGrid, ListTitle, MenuToggleButton, PreContainerGrid, SectionResult } from "../components/pdfAction/style";
+import { Container, Title } from "../components/Home/styles";
+import { FileDropzone } from "../components/pdfAction/FileDropZone";
+import { SortablePdfCard } from "../components/pdfAction/SortablePdfCard";
+import { Sidebar } from "../components/sidebar";
 
 
 export const MergePDF = () => {

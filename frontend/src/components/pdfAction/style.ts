@@ -262,12 +262,60 @@ export const FileInfo = styled.div`
 `;
 
 
+export const PreviewBox = styled.div`
+  background-color: #1e293b; /* Fundo escuro estilo editor de código */
+  color: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #334155;
+  text-align: left;
+  white-space: pre-wrap; /* Mantém as quebras de linha do Markdown/JSON */
+`;
+
+export const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #4b5563;
+  }
+
+  input[type="text"], select {
+    padding: 0.6rem;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: #ef4444;
+    }
+  }
+`;
+
+export const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  user-select: none;
+`;
+
 // ********* FILE DROP ZONE ************* //
-
-
-
-
-
 
 export const DropText = styled.p<DropAreaProps>`
   font-weight: 500;
@@ -279,3 +327,5 @@ export const HighlightText = styled.span`
   color: #ef4444;
   font-weight: 500;
 `;
+
+

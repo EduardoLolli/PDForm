@@ -1,10 +1,11 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Home } from './pages/Home';
-import { MergePDF } from './components/pdfAction/MergePDF';
 import { Layout } from './components/Layout';
-import { ImagesToPDF } from './components/pdfAction/ImagesToPDF';
+import { ImagesToPDF } from './pages/ImagesToPDF';
 import { ComingSoon } from './pages/ComingSoon';
-import { SplitPDF } from './components/pdfAction/SplitPDF';
+import { SplitPDF } from './pages/SplitPDF';
+import { MergePDF } from './pages/MergePDF';
+import { ConvertDocToPDF } from './pages/DocsToPDF';
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       {
         path: '/split-pdf',
         element: <SplitPDF />,
+      },
+      {
+        path: '/doc-to-pdf',
+        element: <ConvertDocToPDF />,
       },
       {
         path: 'coming-soon',

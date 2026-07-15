@@ -3,7 +3,7 @@ import io
 from pypdf import PdfReader, PdfWriter
 from fastapi.responses import StreamingResponse
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, status
-from app.services import merge_pdf_files, convert_image_to_pdf, convert_pages_to_pdf
+from app.services import merge_pdf_files, convert_image_to_pdf, convert_pages_to_pdf, convert_document_to_pdf
 
 router = APIRouter(
     prefix="/api/v1/pdf",
@@ -67,3 +67,41 @@ async def split_pdf(
             headers={"Content-Disposition": f"attachment; filename=splited_pdf.pdf"}
         )
     
+    
+@router.post("/convert-doc")
+async def convert_doc_endpoint(
+    file: UploadFile = File(...),
+    filename: str = Form(...),
+    theme: str = Form("modern"),
+    include_toc: bool = Form(True), 
+    logo: UploadFile | None = File(None)
+):
+    file_ext = file.filename.split(".")[-1].lower() if file.filename else ""
+    if file_ext not in ["md", "json"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Apenas arquivos .md (Markdown) ou .json são suportados."
+        )
+
+    try:
+        pdf_io = await convert_document_to_pdf(
+            file=file,
+            file_type=file_ext,
+            theme=theme,
+            include_toc=include_toc,
+            logo=logo
+        )
+
+        clean_filename = f"{filename.replace(' ', '_')}.pdf"
+        return StreamingResponse(
+            pdf_io,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={clean_filename}"}
+        )
+
+    except Exception as e:
+        print(f"Erro na conversão de documento: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Falha ao processar o documento: {str(e)}"
+        )

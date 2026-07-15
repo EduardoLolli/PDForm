@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Container, ImageCard, ImageGrid, ListTitle, MenuToggleButton, PreContainerGrid, SectionResult, Title, IndexBadge, ImageName } from "./style";
-import { FileDropzone } from "./FileDropZone";
-import { Sidebar } from "../sidebar";
-import { downloadBlob, loadPdfPages, type PageItem } from "../../util/pdf";
-import { PdfThumbnail } from "./PdfThumbnail";
+import { Container, ImageCard, ImageGrid, ListTitle, MenuToggleButton, PreContainerGrid, SectionResult, Title, IndexBadge, ImageName } from "../components/pdfAction/style";
+import { FileDropzone } from "../components/pdfAction/FileDropZone";
+import { Sidebar } from "../components/sidebar";
+import { downloadBlob, loadPdfPages, type PageItem } from "../util/pdf";
+import { PdfThumbnail } from "../components/pdfAction/PdfThumbnail";
 import axios from "axios";
 
 export const SplitPDF = () => {
@@ -61,9 +61,9 @@ export const SplitPDF = () => {
       const blob = response.data as Blob;
       downloadBlob(blob, "file");
 
-      // setFile(null);
-      // setPdfPages([]);
-      // setSidebarOpen(false);
+      setFile(null);
+      setPdfPages([]);
+      setSidebarOpen(false);
     } catch (error) {
       console.error("Erro na requisição de split:", error);
       alert("Falha ao dividir o arquivo PDF. Verifique a conexão com o servidor.");
